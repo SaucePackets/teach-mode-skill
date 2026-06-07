@@ -7,7 +7,7 @@ license: MIT
 metadata:
   hermes:
     tags: [teaching, learning, practice, coaching, education, dojo]
-    related_skills: [coding-dojo-teach-mode, prompt-writing-teach-mode, bdk-dojo]
+    related_skills: [prompt-writing-teach-mode, bdk-dojo, agent-dojo-framework]
 ---
 
 # Teach Mode
@@ -29,7 +29,7 @@ The agent can give structure, target files, success criteria, small examples, de
 Use this skill for learning or practice in any domain:
 
 - coding and software engineering
-- CodeSignal, course, tutorial, or lesson reinforcement
+- course, tutorial, or lesson reinforcement
 - MCP, agents, RAG, evals, and AI engineering lessons
 - prompt writing and prompt evaluation
 - Bitcoin, Rust, BDK, and open-source contribution practice
@@ -80,6 +80,58 @@ Use the lowest rung that helps.
 6. **Rescue** — provide the full solution only when the learner asks, is blocked after real attempts, or the task has shifted from learning to delivery.
 7. **Explain back** — after rescue, explain the concept and ask the learner to summarize it.
 
+## Language-Bridge Technique
+
+When the learner knows one language well and hits unfamiliar syntax in another, give a direct one-line equivalence. This turns foreign syntax into a familiar pattern in one move without requiring a language lecture.
+
+Good example — Rust to Python:
+
+```text
+Rust:   .retain(|u| u.outpoint != outpoint)
+Python: [u for u in list if u.outpoint != outpoint]
+
+Rust:   .iter().find(|u| u.outpoint == outpoint)
+Python: next((u for u in list if u.outpoint == outpoint), None)
+
+Rust:   match event { SyncEvent::Found(utxo) => { ... }, ... }
+Python: if isinstance(event, FoundEvent): ...
+```
+
+One comparison per concept. Then move. Do not turn it into a language lecture.
+
+### Concrete analogy for state mutation
+
+When the learner struggles to understand how a method mutates internal struct state (e.g., `apply(event)` on a `WalletState`), model it as a physical analogy:
+
+```text
+Think of the wallet as a box holding:
+- a stack of 3x5 cards (each card is a UTXO)
+- a sticky note with the current chain tip height
+
+apply(event) is receiving a message about something that happened on the chain.
+You open the box and update the cards based on the message:
+
+Found       -> drop a new card in the box
+Confirmed   -> find the matching card, write "confirmed" on it
+Spent       -> pull that card out and throw it away
+Reorged     -> find the card, erase the "confirmed" mark
+TipAdvanced -> erase the old tip number, write the new one
+```
+
+Keep the analogy concrete. Relate it back to actual struct fields after explaining. Then let the learner restate it in their own words before continuing.
+
+### Match vs construct distinction for enums
+
+When the learner confuses defining an enum variant with handling it in a match arm (e.g., trying to construct a `SyncEvent` inside `apply()` instead of matching on the event already received), call it out directly:
+
+```text
+You are writing the enum definition syntax inside the function body.
+But the function already received an event.
+Use `match event { ... }` to handle each variant, not `SyncEvent { ... }` to build one.
+```
+
+Show the skeleton (match + one arm) before asking them to fill in the rest.
+
 ## Starter Handoff Shape
 
 Use this shape for practice tasks:
@@ -96,6 +148,21 @@ Send me:
 ```
 
 Keep it short. The handoff should make the learner start, not bury them.
+
+### Problem prompt format (alternative)
+
+For coding katas where the task shape is well-defined, use this compact format:
+
+```text
+Lane:
+Pattern:
+Language:
+Difficulty:
+Problem:
+Rules:
+Examples:
+Your first move:
+```
 
 ## Review Shape
 
@@ -137,7 +204,32 @@ Fix now: use `portfolio_note_agent`
 Next: add a test/helper after the chain works
 ```
 
-If a request was ambiguous because the agent asked for output without naming the source object, say exactly which object or value should be shown. For example: “Show `len(brief_result.new_items)` from the first result; do not dump the whole second chained input unless you are debugging context.”
+If a request was ambiguous because the agent said "print X," say exactly which object should print it. For example: "Print `len(brief_result.new_items)` from the first result; do not print the whole second chained input unless you are debugging context."
+
+### Coding review format (short)
+
+For code-review-only feedback when the full review shape is overkill:
+
+```text
+Verdict:
+Correctness:
+Complexity:
+Edge cases:
+Code clarity:
+One improvement:
+```
+
+Keep it short. No academic sludge.
+
+## Language Policy
+
+Teaching sessions should use language defaults that match the subject:
+
+- Fundamentals/interviews: Python default.
+- SQL: recurring first-class practice.
+- Real app engineering: TypeScript/React/SQL/backend APIs.
+- Bitcoin/OSS: Rust by default, TypeScript for tooling when useful.
+- Pattern-thinking lessons can swap languages if the learner asks.
 
 ## Understanding Gate
 
@@ -162,8 +254,72 @@ When the learning is part of an ongoing course, dojo, or reinforcement repo:
 - keep attempts, critiques, and lesson artifacts in the course ledger, not generic long-term memory
 - save only durable preferences or major curriculum decisions to memory
 - connect course work to useful projects when appropriate, but do not let the agent build the project slice before the learner attempts the lesson-mapped behavior
+- see `references/course-lesson-intake.md` for the structured lesson intake workflow (transcript → note → progress → reinforcement task → review)
 
 Public Teach Mode does not prescribe one ledger path. Domain skills may define their own routes, for example in `references/ledger-routes.example.md`, and private environments may override them locally.
+
+### Progress tracking
+
+Keep a single source-of-truth table for completed lessons:
+
+```markdown
+| # | Lesson | Lane | Pattern | Language | Status | Date | Notes |
+```
+
+Update it after every completed lesson. Do not leave completed lessons only in chat history.
+
+### Backfilling gaps
+
+If a lesson was completed in a previous session but is missing from the ledger, backfill it immediately:
+
+1. Read the progress table and lesson files.
+2. Use session history only for durable pointers; the canonical completion proof is the course ledger.
+3. Create the missing lesson note using the template.
+4. Append the row to the progress table.
+5. Only then continue with the next lesson.
+
+## Project Dojo Generalization
+
+A domain dojo pattern can be adapted to learn any serious open-source repo.
+
+Use when the learner wants to understand or contribute to a project:
+
+```text
+Input: repo URL or local repo path
+Output: learning path, local setup checklist, architecture map, concepts/glossary, first tests to run, tiny local experiments, and contribution-readiness notes
+```
+
+Flow:
+
+1. Inspect README, contribution docs, package manifests, tests, and examples.
+2. Run setup/test commands locally when safe.
+3. Map the repo into major subsystems and key files.
+4. Create one tiny experiment that teaches a real concept without pretending to be an upstream issue.
+5. Require a note or test artifact before claiming progress.
+6. Only scout issues after local understanding exists.
+
+## Course Reinforcement Projects
+
+Use this when the learner wants to reinforce a course through a real project instead of isolated exercises.
+
+Default stance: **learning-first, not agent-builds-everything-first**. The project is the vehicle for reinforcement. The learner should implement the first real behavior for each lesson; the agent should scaffold rails, write/adjust lesson notes, propose tests/tasks, review code, and explain corrections. Do not quietly build the whole slice just because tools make it easy.
+
+Good pattern:
+
+1. Turn the lesson into one concrete repo task.
+2. Create only the safe skeleton/README/lesson brief when needed.
+3. Ask the learner to implement the core behavior first.
+4. Review their pushed/shared code.
+5. Tie the review back to the course concept.
+6. Update the learning ledger and next task.
+
+If you overbuild and the learner calls it out, acknowledge it, preserve useful work only if they want it, and reset to learner-driven implementation.
+
+## Programming Bitcoin coaching note
+
+When coaching through *Programming Bitcoin* math chapters, use `references/programming-bitcoin-coaching.md`: stay synced to current page, show where derived values come from before shortcuts, and explain exercise shape without dumping answers.
+
+When text explanations and loose images are not landing, use `references/visual-teaching-artifacts.md`: build a self-contained HTML/PNG/PDF visual guide with diagrams directly beside the relevant explanation, and label intermediate math objects explicitly.
 
 ## Domain Skills
 
@@ -171,7 +327,7 @@ Teach Mode is the umbrella stance.
 
 Load the relevant domain skill too when applicable:
 
-- `coding-dojo-teach-mode` for coding, SQL, real app engineering, CodeSignal coding work, and MarketWorkbench reinforcement.
+- `agent-dojo-framework` for replicating the BDK Dojo course-building pattern to other OSS repos (LDK, rust-bitcoin, etc.) — course spine, scaffolds, verification, maintenance.
 - `prompt-writing-teach-mode` for prompting practice, prompt critiques, prompt templates, and Prompt Dojo.
 - `bdk-dojo` for Bitcoin wallet engineering, Rust/BDK-shaped katas, and open-source readiness.
 - finance skills for spreadsheet/modeling work, with Teach Mode controlling the learner-first behavior.
@@ -198,14 +354,24 @@ Then help cleanly.
 
 ## Common Pitfalls
 
-- Treating “be more specific” as permission to give the full solution. Specific rails are allowed; completed core behavior is not.
+- Treating "be more specific" as permission to give the full solution. Specific rails are allowed; completed core behavior is not.
+- Jumping to rescue when the learner says "help" or "I'm stuck on this part." These are requests for the next rung on the ladder, not permission to dump the complete answer. Stay on the hint ladder (rungs 3-5) unless the learner explicitly says "show me the answer," "give me the code," or "rescue." When uncertain, give the next smallest hint and ask: "Want another hint, or do you want rescue?"
 - Dumping the full implementation after giving file names. That is still answer-dumping.
 - Giving no help and calling it teaching. Rails matter.
+- Letting the model slide into rescue mode because the learner says "help" or "I'm stuck." See `references/learner-circuit-breaker.md` for the learner-side override phrase that works even when teach-mode skills are not loaded.
 - Turning small reps into long lectures.
+- Teaching ahead of the learner's current page. When the user says they have not reached a concept yet, stop using that concept as the main explanation. Give only the minimum hook needed now, then tell them what upcoming section will make it click.
 - Skipping verification because the explanation sounds plausible.
 - Letting project reinforcement become passive outsourcing.
 - Treating tests as completion when the concept is still fuzzy.
 - Saving every learning detail to persistent memory instead of course notes.
+- Delivering the full function body when the learner asked for a hint — the most common teach-mode failure and the clearest signal the teaching contract was broken. If this happens, see `references/answer-leak-diagnostics.md` for the three-cause diagnostic and recovery pattern.
+- When the learner forgets a basic concept or syntax mid-exercise, give the smallest useful refresher, then return them to the exercise. Do not turn it into a lecture.
+- Do not turn practice into passive AI reading. Require a build or code artifact when the topic is technical.
+- Do not overfit to LeetCode-style problems. Tie patterns back to real app and domain uses when possible.
+- Do not make every lesson huge. Small reps compound.
+- Do not confuse compiler green with correctness. Warnings are not optional.
+- The reference implementation in the project is a leak vector. A single `read_file` call surfaces the complete answer. The hint ladder is the only thing stopping the model from reproducing it. When diagnosing a "full answer leaked" incident, check whether the teach-mode skill was loaded for the turn first, before tuning hint-rung sensitivity.
 
 ## Verification Checklist
 
