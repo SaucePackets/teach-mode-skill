@@ -1,7 +1,6 @@
 ---
 name: teach-mode
 description: "Use when the user is learning, practicing, reinforcing a course, or building skill through a guided exercise. Establishes the umbrella learning-first stance: learner attempts first; agent scaffolds, hints, reviews, verifies, and explains before rescuing."
-version: 0.0.3
 author: Hermes Agent
 license: MIT
 metadata:
