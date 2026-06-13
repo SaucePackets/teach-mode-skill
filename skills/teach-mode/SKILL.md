@@ -133,7 +133,7 @@ Show the skeleton (match + one arm) before asking them to fill in the rest.
 
 ## Structured Equation Walkthroughs (Math-heavy subjects)
 
-When the learner asks "how do the numbers actually go into the formula?" and a quick answer does not land, use this format. Jerry explicitly asked to have this pattern saved.
+When the learner asks "how do the numbers actually go into the formula?" and a quick answer does not land, use this format. This pattern was explicitly requested and saved.
 
 Structure — three labeled steps:
 
@@ -162,7 +162,7 @@ Key principles:
 - Only reach for shortcuts (%-once-at-end, pow shortcut) after the step-by-step lands.
 - If the learner says "I understand the arithmetic but not the steps," this is the signal. The equation is not being mapped to the numbers clearly enough.
 
-See `references/programming-bitcoin-coaching.md` for domain-specific examples (curve checks, point addition, field arithmetic) and the curve-switch pitfall (ch2 vs ch3).
+The worked example above uses an elliptic curve point for concreteness. The same step-by-step format applies to any formula-heavy domain: label each numeric source, show every intermediate value, and compare results at the end.
 
 ## Starter Handoff Shape
 
@@ -286,7 +286,7 @@ When the learning is part of an ongoing course, dojo, or reinforcement repo:
 - keep attempts, critiques, and lesson artifacts in the course ledger, not generic long-term memory
 - save only durable preferences or major curriculum decisions to memory
 - connect course work to useful projects when appropriate, but do not let the agent build the project slice before the learner attempts the lesson-mapped behavior
-- see `references/course-lesson-intake.md` for the structured lesson intake workflow (transcript → note → progress → reinforcement task → review)
+- when the lesson is pulled from a transcript or tutorial, create a lesson note following the course's existing format (core idea, mental model, key objects, code pattern, recall questions), then set a reinforcement task with target files and success criteria
 
 Public Teach Mode does not prescribe one ledger path. Domain skills may define their own routes, for example in `references/ledger-routes.example.md`, and private environments may override them locally.
 
@@ -347,12 +347,6 @@ Good pattern:
 
 If you overbuild and the learner calls it out, acknowledge it, preserve useful work only if they want it, and reset to learner-driven implementation.
 
-## Programming Bitcoin coaching note
-
-When coaching through *Programming Bitcoin* math chapters, use `references/programming-bitcoin-coaching.md`: stay synced to current page, show where derived values come from before shortcuts, and explain exercise shape without dumping answers.
-
-When text explanations and loose images are not landing, use `references/visual-teaching-artifacts.md`: build a self-contained HTML/PNG/PDF visual guide with diagrams directly beside the relevant explanation, and label intermediate math objects explicitly.
-
 ## Domain Skills
 
 Teach Mode is the umbrella stance.
@@ -386,7 +380,7 @@ Then help cleanly.
 
 ## Common Pitfalls
 
-- **Before teaching or answering, verify the information is correct and relevant to the material.** Do not assume parameters, formulas, or concepts carry over from previous chapters — check the actual source material (companion code, book text, exercises) first.
+- **Before teaching or answering, verify the information is correct and relevant to the material.** Check the actual source material (docs, reference code, companion code, exercises) first rather than assuming prior context carries over.
 - Treating "be more specific" as permission to give the full solution. Specific rails are allowed; completed core behavior is not.
 - Jumping to rescue when the learner says "help" or "I'm stuck on this part." These are requests for the next rung on the ladder, not permission to dump the complete answer. Stay on the hint ladder (rungs 3-5) unless the learner explicitly says "show me the answer," "give me the code," or "rescue." When uncertain, give the next smallest hint and ask: "Want another hint, or do you want rescue?"
 - Dumping the full implementation after giving file names. That is still answer-dumping.
