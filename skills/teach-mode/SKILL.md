@@ -131,6 +131,39 @@ Use `match event { ... }` to handle each variant, not `SyncEvent { ... }` to bui
 
 Show the skeleton (match + one arm) before asking them to fill in the rest.
 
+## Structured Equation Walkthroughs (Math-heavy subjects)
+
+When the learner asks "how do the numbers actually go into the formula?" and a quick answer does not land, use this format. Jerry explicitly asked to have this pattern saved.
+
+Structure — three labeled steps:
+
+```
+Equation: y² = x³ + 7   (over F_223)
+
+Point: (192, 105)
+
+Step 1 — plug x into the right side:
+  x³ + 7 = 192³ + 7 = 7077888 + 7 = 7077895
+  7077895 % 223 = 98
+
+Step 2 — plug y into the left side:
+  y² = 105² = 11025
+  11025 % 223 = 98
+
+Step 3 — compare:
+  98 == 98 → on the curve ✓
+```
+
+Key principles:
+- Label each number's source ("plug x", "plug y", "apply the formula").
+- Show every intermediate value explicitly. Do not skip reduction or simplification steps.
+- Show the full raw expression, then the reduced form. Do not skip to the reduced form.
+- For formulas with multiple operations, step through operand by operand.
+- Only reach for shortcuts (%-once-at-end, pow shortcut) after the step-by-step lands.
+- If the learner says "I understand the arithmetic but not the steps," this is the signal. The equation is not being mapped to the numbers clearly enough.
+
+See `references/programming-bitcoin-coaching.md` for domain-specific examples (curve checks, point addition, field arithmetic) and the curve-switch pitfall (ch2 vs ch3).
+
 ## Starter Handoff Shape
 
 Use this shape for practice tasks:
@@ -353,6 +386,7 @@ Then help cleanly.
 
 ## Common Pitfalls
 
+- **Before teaching or answering, verify the information is correct and relevant to the material.** Do not assume parameters, formulas, or concepts carry over from previous chapters — check the actual source material (companion code, book text, exercises) first.
 - Treating "be more specific" as permission to give the full solution. Specific rails are allowed; completed core behavior is not.
 - Jumping to rescue when the learner says "help" or "I'm stuck on this part." These are requests for the next rung on the ladder, not permission to dump the complete answer. Stay on the hint ladder (rungs 3-5) unless the learner explicitly says "show me the answer," "give me the code," or "rescue." When uncertain, give the next smallest hint and ask: "Want another hint, or do you want rescue?"
 - Dumping the full implementation after giving file names. That is still answer-dumping.
