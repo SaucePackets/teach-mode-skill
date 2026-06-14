@@ -155,9 +155,10 @@ Step 3 — compare:
 ```
 
 Key principles:
-- Label each number's source ("plug x", "plug y", "apply the formula").
+- **No assumed knowledge.** Every number and formula must include where it came from. Do not skip steps because "we covered this earlier" or "it should be obvious." If a value comes from Fermat, say so. If a number is `p - 2`, say why.
 - Show every intermediate value explicitly. Do not skip reduction or simplification steps.
 - Show the full raw expression, then the reduced form. Do not skip to the reduced form.
+- Label each number's source ("plug x", "plug y", "apply the formula", "from Fermat's theorem").
 - For formulas with multiple operations, step through operand by operand.
 - Only reach for shortcuts (%-once-at-end, pow shortcut) after the step-by-step lands.
 - If the learner says "I understand the arithmetic but not the steps," this is the signal. The equation is not being mapped to the numbers clearly enough.
